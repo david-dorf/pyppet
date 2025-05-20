@@ -73,7 +73,8 @@ Joint = RigidJoint | SliderJoint | RevoluteJoint
 class Model:
     def __init__(self, name: str, joints: dict[str, Joint], transform: Transform | None = None):
         self.transform = transform if transform is not None else Transform()
-        self.mesh_path = Path(os.environ['PIXI_PROJECT_ROOT']) / "marionette" / "marionette" / "models" / "franka_research_3" / "meshes"  # TODO: Don't hardcode, use Python package lib directory
+        self.pixi_root = Path(os.environ['PIXI_PROJECT_ROOT'])
+        self.mesh_path = self.pixi_root / "src" / "marionette" / "models" / name / "meshes"
         self.joints = joints
         self.base_link = self._get_base_link()
         self.base_path = name + "/" + self.base_link.name

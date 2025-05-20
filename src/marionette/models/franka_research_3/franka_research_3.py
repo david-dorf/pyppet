@@ -93,4 +93,4 @@ joints = {
     )
 }
 
-franka_research_3 = Model("franka_panda", joints, Transform())
+franka_research_3 = Model("franka_research_3", joints, Transform())
