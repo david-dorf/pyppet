@@ -1,0 +1,6 @@
+.pixi
+.ropeproject
+.vscode
+__pycache__
+*.egg-info
+*/target
