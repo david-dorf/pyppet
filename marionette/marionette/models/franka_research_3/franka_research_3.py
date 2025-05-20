@@ -2,17 +2,17 @@ from marionette.format import Link, RigidJoint, RevoluteJoint, SliderJoint, Tran
 from math import pi
 
 
-link0 = Link(name = 'link0', file = "meshes/link0.dae", mass = 0.629769, is_base=True)
-link1 = Link(name = 'link1', file = "meshes/link1.dae", mass = 4.970684)
-link2 = Link(name = 'link2', file = "meshes/link2.dae", mass = 0.646926)
-link3 = Link(name = 'link3', file = "meshes/link3.dae", mass = 3.228604)
-link4 = Link(name = 'link4', file = "meshes/link4.dae", mass = 3.587895)
-link5 = Link(name = 'link5', file = "meshes/link5.dae", mass = 1.225946)
-link6 = Link(name = 'link6', file = "meshes/link6.dae", mass = 1.666555)
-link7 = Link(name = 'link7', file = "meshes/link7.dae", mass = 0.735522)
-hand = Link(name = 'hand', file = "meshes/hand.dae", mass = 0.73)
-finger1 = Link(name = 'finger1', file = "meshes/finger.dae", mass = 0.015)
-finger2 = Link(name = 'finger2', file = "meshes/finger.dae", mass = 0.015)
+link0 = Link(name = 'link0', file = "link0.dae", mass = 0.629769, is_base=True)
+link1 = Link(name = 'link1', file = "link1.dae", mass = 4.970684)
+link2 = Link(name = 'link2', file = "link2.dae", mass = 0.646926)
+link3 = Link(name = 'link3', file = "link3.dae", mass = 3.228604)
+link4 = Link(name = 'link4', file = "link4.dae", mass = 3.587895)
+link5 = Link(name = 'link5', file = "link5.dae", mass = 1.225946)
+link6 = Link(name = 'link6', file = "link6.dae", mass = 1.666555)
+link7 = Link(name = 'link7', file = "link7.dae", mass = 0.735522)
+hand = Link(name = 'hand', file = "hand.dae", mass = 0.73)
+finger1 = Link(name = 'finger1', file = "finger.dae", mass = 0.015)
+finger2 = Link(name = 'finger2', file = "finger.dae", mass = 0.015)
 
 joints = {
     "joint0": RevoluteJoint(

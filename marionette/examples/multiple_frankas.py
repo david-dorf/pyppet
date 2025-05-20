@@ -1,5 +1,5 @@
 from marionette.format import Model, Transform
-from marionette.models.franka_research_3 import franka_research_3
+from marionette.models.franka_research_3.franka_research_3 import franka_research_3
 import copy
 import rerun as rr
 
