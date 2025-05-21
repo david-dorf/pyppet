@@ -1,5 +1,5 @@
 from marionette.format import RigidJoint
-from marionette.models.franka_research_3.franka_research_3 import franka_research_3
+from marionette.robots import franka_research_3
 import time
 import math
 import rerun as rr
