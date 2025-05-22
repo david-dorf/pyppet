@@ -1,23 +1,24 @@
-from marionette.format import RigidJoint
 from marionette.robots import franka_research_3
+from marionette.format import RigidJoint
+import rerun as rr
 import time
 import math
-import rerun as rr
 
 
 rr.init("", spawn=True)
-franka_research_3.visualize()
 
 i=0
+franka_research_3.visualize()
 while True:
     try:
         for joint_name, joint in franka_research_3.joints.items():
-            if not isinstance(joint, RigidJoint):
-                limits = joint.limits
-                if limits is None:
-                    position = i
-                else:
-                    position = (limits[0] + limits[1]) / 2 + (limits[0] - limits[1]) / 2 * math.sin(i)
+            # Move non-rigid joints in a sinusoidal trajectory between limits
+            if isinstance(joint, RigidJoint):
+                continue
+            if joint.limits is not None:
+                midline = (joint.limits[0] + joint.limits[1]) / 2
+                amplitude = (joint.limits[0] - joint.limits[1]) / 2
+                position = midline + amplitude * math.sin(i)
                 franka_research_3.move_joint(joint_name, position)
         i+=0.01
         time.sleep(0.01)  # Add a small delay to control the speed of the movement

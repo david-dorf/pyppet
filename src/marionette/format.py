@@ -5,22 +5,18 @@ from scipy.spatial.transform import Rotation
 import numpy as np
 import os
 from pathlib import Path
+from copy import deepcopy
 
 
 @dataclass
 class Link:
-    """
-    Rigid component in a robot. Contains a mesh file, a name, and an optional mass.
-    Base links serve as the foundation of the robot. There should only be one base link per robot.
-    """
+    """Rigid component in a robot. Contains a mesh file and a name."""
     file: str
     name: str
-    is_base: bool = False
-    mass: float | None = None
 
 @dataclass
 class Transform:
-    """Change in position and orientation of a rigid body."""
+    """Translation in meters and rotation in radians of a rigid body."""
     x: float = 0.0
     y: float = 0.0
     z: float = 0.0
@@ -31,54 +27,67 @@ class Transform:
     def rotation(self): return self.roll, self.pitch, self.yaw
 
 @dataclass
-class JointBase:
-    """Base class for all joints."""
+class RigidJoint:
+    """Joint that does not allow translation or rotation.
+
+    Attributes:
+        parent: The parent link of the joint.
+        child: The child link of the joint.
+        transform: The translation and rotation of the child link from the parent link.
+    """
     parent: Link
     child: Link
     transform: Transform
 
 @dataclass
-class RevoluteJoint(JointBase):
+class RevoluteJoint:
     """
     Joint that allows rotation around a single axis.
     Limits are optional and the joint will rotate continuously without limits.
 
     Attributes:
+        parent: The parent link of the joint.
+        child: The child link of the joint.
+        transform: The translation and rotation of the child link from the parent link.
         axis: The axis of rotation.
         limits: The limits of rotation in radians.
     """
+    parent: Link
+    child: Link
+    transform: Transform
     axis: tuple[float, float, float]
     limits: tuple[float, float] | None
 
 @dataclass
-class SliderJoint(JointBase):
+class SliderJoint:
     """
     Joint that allows translation along a single axis.
 
     Attributes:
+        parent: The parent link of the joint.
+        child: The child link of the joint.
+        transform: The translation and rotation of the child link from the parent link.
         axis: The axis of translation.
         limits: The limits of translation in meters.
     """
+    parent: Link
+    child: Link
+    transform: Transform
     axis: tuple[float, float, float]
     limits: tuple[float, float]
-
-@dataclass
-class RigidJoint(JointBase):
-    """Joint that does not allow translation or rotation."""
-    pass
 
 Joint = RigidJoint | SliderJoint | RevoluteJoint
 
 
 class Model:
-    def __init__(self, name: str, joints: dict[str, Joint], transform: Transform | None = None):
-        self.transform = transform if transform is not None else Transform()
-        self.pixi_root = Path(os.environ['PIXI_PROJECT_ROOT'])
-        self.mesh_path = self.pixi_root / "src" / "marionette" / "models" / name / "meshes"
+    def __init__(self, name: str, joints: dict[str, Joint], base_link: Link, transform: Transform = Transform()):
         self.joints = joints
-        self.base_link = self._get_base_link()
+        self.base_link = base_link
         self.base_path = name + "/" + self.base_link.name
         self.link_path_map = {self.base_link.name: self.base_path}
+        self.transform = transform
+        self.pixi_root = Path(os.environ['PIXI_PROJECT_ROOT'])
+        self.mesh_path = self.pixi_root / "src" / "marionette" / "models" / name / "meshes"
         self.parent_link_to_joints = {}  # Mapping of links to joints with them as the parent
         for joint_name, joint in self.joints.items():
             # Create an empty list for each parent link, and then fill it with joints
@@ -89,7 +98,7 @@ class Model:
         self._load_mesh(self.base_path, self.base_link.file, self.transform)
         self._traverse_joint_tree(self.base_path, self.base_link.name)
 
-    def attach(self, other_model: "Model", joint_name: str, transform: Transform | None = Transform()):
+    def attach(self, other_model: "Model", joint_name: str, transform: Transform = Transform()):
         """Attach another model to this model at the specified joint and optional transform."""
         joint = self.joints[joint_name]
         other_model.transform = transform
@@ -117,16 +126,20 @@ class Model:
             rotation = rr.RotationAxisAngle(axis=axis_unit_vector, radians=position)
             rr.log(rr_path, rr.Transform3D(rotation=rotation, clear=False))
 
-    def _get_base_link(self) -> Link:
-        base_link = None
-        for joint in self.joints.values():
-            if joint.parent.is_base:
-                if base_link is not None:
-                    raise ValueError("Model has multiple base links")
-                base_link = joint.parent
-        if base_link is None:
-            raise ValueError("Model has no base link")
-        return base_link
+    def copy(self, name: str, transform: Transform = Transform()) -> "Model":
+        """Return a deep copy of the model with a new name and transform."""
+        joints = deepcopy(self.joints)
+        base_link = deepcopy(self.base_link)
+        copied_model = Model(
+            name=name,
+            joints=joints,
+            base_link=base_link,
+            transform=transform
+        )
+        copied_model.link_path_map = deepcopy(self.link_path_map)
+        copied_model.parent_link_to_joints = deepcopy(self.parent_link_to_joints)
+        copied_model.mesh_path = self.mesh_path
+        return copied_model
 
     def _traverse_joint_tree(self, rr_path: str, current_link_name: str):
         for joint in self.parent_link_to_joints.get(current_link_name, []):
@@ -135,7 +148,7 @@ class Model:
             self._load_mesh(child_path, joint.child.file, joint.transform)
             self._traverse_joint_tree(child_path, joint.child.name)
 
-    def _load_mesh(self, rr_path: str, file: str, transform: Transform):
+    def _load_mesh(self, rr_path: str, file: str, transform: Transform = Transform()):
         mesh = trimesh.load_mesh(f"{self.mesh_path}/{file}")
         visual = mesh.visual
         if (texture := getattr(visual, 'uv', None)) is not None:

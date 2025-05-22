@@ -1,17 +1,15 @@
-from marionette.format import Model, Transform
 from marionette.robots import franka_research_3
-import copy
+from marionette.format import Transform
 import rerun as rr
 
 
 rr.init("", spawn=True)
+
 cols = 5
 rows = 5
 spacing = 1.0
 for i in range(rows * cols):
     row = i // cols
     col = i % cols
-    new_model = Model(f"franka_panda_{i}",
-                      copy.deepcopy(franka_research_3.joints),
-                      Transform(x = col * spacing, y = row * spacing))
+    new_model = franka_research_3.copy(f"franka_{i}", Transform(x=row, y=col))
     new_model.visualize()
