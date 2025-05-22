@@ -4,7 +4,7 @@ import rerun as rr
 
 rr.init("", spawn=True)
 
-model1 = franka_research_3
-model2 = franka_research_3.copy("model2")
-model1.attach(model2, "joint6")
-model1.visualize()
+model1 = franka_research_3  # Creates an instance of the franka_research_3 robot model
+model1.visualize()  # Constructs the model tree and visualizes the first robot model
+model2 = model1.copy("model2")  # Creates a copy of model1 named model2
+model1.attach(model2, "joint6")  # Attaches model2 to joint6 of model1
