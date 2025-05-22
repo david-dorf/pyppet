@@ -80,6 +80,15 @@ Joint = RigidJoint | SliderJoint | RevoluteJoint
 
 
 class Model:
+    """
+    Defines a robot model.
+
+    Attributes:
+        name: The name of the model.
+        joints: A dictionary of joints that the model is composed of.
+        base_link: The first link in the model kinematic chain.
+        transform: An optional transform specifying the model translation and rotation.
+    """
     def __init__(self, name: str, joints: dict[str, Joint], base_link: Link, transform: Transform = Transform()):
         self.joints = joints
         self.base_link = base_link
