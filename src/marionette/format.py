@@ -10,9 +10,11 @@ from copy import deepcopy
 
 @dataclass
 class Link:
-    """Rigid component in a robot. Contains a mesh file and a name."""
-    file: str
+    """Rigid component in a robot. Contains name, visual mesh file, and optional collision/mass."""
     name: str
+    visual: str
+    collision: str | None = None
+    mass: float | None = None
 
 @dataclass
 class Transform:
@@ -104,7 +106,11 @@ class Model:
 
     def visualize(self):
         """Visualize the model in Rerun."""
-        self._load_mesh(self.base_path, self.base_link.file, self.transform)
+        # Load base link meshes
+        self._load_mesh(self.base_path, self.base_link.visual, self.transform)
+        if self.base_link.collision is not None:
+            self._load_mesh(self.base_path + "_collision", self.base_link.collision, self.transform)
+        # Load all other meshes in the tree
         self._traverse_joint_tree(self.base_path, self.base_link.name)
 
     def attach(self, other_model: "Model", joint_name: str, transform: Transform = Transform()):
@@ -154,11 +160,14 @@ class Model:
         for joint in self.parent_link_to_joints.get(current_link_name, []):
             child_path = rr_path + "/" + joint.child.name
             self.link_path_map[joint.child.name] = child_path
-            self._load_mesh(child_path, joint.child.file, joint.transform)
+            self._load_mesh(child_path, joint.child.visual, joint.transform)
+            if joint.child.collision is not None:
+                child_collision_path = rr_path + "/" + joint.child.name + "/collision"
+                self._load_mesh(child_collision_path, joint.child.collision)
             self._traverse_joint_tree(child_path, joint.child.name)
 
-    def _load_mesh(self, rr_path: str, file: str, transform: Transform = Transform()):
-        mesh = trimesh.load_mesh(f"{self.mesh_path}/{file}")
+    def _load_mesh(self, rr_path: str, visual_file: str, transform: Transform = Transform()):
+        mesh = trimesh.load_mesh(f"{self.mesh_path}/{visual_file}")
         visual = mesh.visual
         if (texture := getattr(visual, 'uv', None)) is not None:
             texture[:, 1] = 1.0 - texture[:, 1]

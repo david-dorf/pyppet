@@ -3,7 +3,7 @@ authors = ["david-dorf <davidjohndorf@gmail.com>"]
 channels = ["conda-forge"]
 description = "Robot model format using Python instead of XML for better type checking, logic, scripting, and parsing."
 name = "marionette"
-platforms = ["linux-64", "osx-arm64", "win-64"]
+platforms = ["linux-64", "osx-arm64", "win-64"]  # taichi osx-64 only supported for macos11
 version = "0.1.0"
 
 [tasks]

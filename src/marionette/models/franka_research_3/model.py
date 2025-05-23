@@ -2,17 +2,17 @@ from marionette.format import Link, RigidJoint, RevoluteJoint, SliderJoint, Tran
 from math import pi
 
 
-link0 = Link(name = 'link0', file = "link0.dae")
-link1 = Link(name = 'link1', file = "link1.dae")
-link2 = Link(name = 'link2', file = "link2.dae")
-link3 = Link(name = 'link3', file = "link3.dae")
-link4 = Link(name = 'link4', file = "link4.dae")
-link5 = Link(name = 'link5', file = "link5.dae")
-link6 = Link(name = 'link6', file = "link6.dae")
-link7 = Link(name = 'link7', file = "link7.dae")
-hand = Link(name = 'hand', file = "hand.dae")
-finger1 = Link(name = 'finger1', file = "finger.dae")
-finger2 = Link(name = 'finger2', file = "finger.dae")
+link0 = Link(name = 'link0', visual = "link0.dae")
+link1 = Link(name = 'link1', visual = "link1.dae")
+link2 = Link(name = 'link2', visual = "link2.dae")
+link3 = Link(name = 'link3', visual = "link3.dae")
+link4 = Link(name = 'link4', visual = "link4.dae")
+link5 = Link(name = 'link5', visual = "link5.dae")
+link6 = Link(name = 'link6', visual = "link6.dae")
+link7 = Link(name = 'link7', visual = "link7.dae")
+hand = Link(name = 'hand', visual = "hand.dae")
+finger1 = Link(name = 'finger1', visual = "finger.dae")
+finger2 = Link(name = 'finger2', visual = "finger.dae")
 
 joints = {
     "joint0": RevoluteJoint(
@@ -93,4 +93,4 @@ joints = {
     )
 }
 
-franka_research_3 = Model("franka_research_3", joints, link0)
+franka_research_3 = Model(name = "franka_research_3", joints = joints, base_link = link0)
