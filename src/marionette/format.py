@@ -90,13 +90,15 @@ class Model:
         joints: A dictionary of joints that the model is composed of.
         base_link: The first link in the model kinematic chain.
         transform: An optional transform specifying the model translation and rotation.
+        visualize_collisions: Enables collision mesh visualization if True.
     """
-    def __init__(self, name: str, joints: dict[str, Joint], base_link: Link, transform: Transform = Transform()):
+    def __init__(self, name: str, joints: dict[str, Joint], base_link: Link, transform: Transform = Transform(), visualize_collisions: bool = False):
         self.joints = joints
         self.base_link = base_link
         self.base_path = name + "/" + self.base_link.name
         self.link_path_map = {self.base_link.name: self.base_path}
         self.transform = transform
+        self.visualize_collisions = visualize_collisions
         self.pixi_root = Path(os.environ['PIXI_PROJECT_ROOT'])
         self.mesh_path = self.pixi_root / "src" / "marionette" / "models" / name / "meshes"
         self.parent_link_to_joints = {}  # Mapping of links to joints with them as the parent
@@ -108,7 +110,7 @@ class Model:
         """Visualize the model in Rerun."""
         # Load base link meshes
         self._load_mesh(self.base_path, self.base_link.visual, self.transform)
-        if self.base_link.collision is not None:
+        if self.base_link.collision is not None and self.visualize_collisions:
             self._load_mesh(self.base_path + "_collision", self.base_link.collision, self.transform)
         # Load all other meshes in the tree
         self._traverse_joint_tree(self.base_path, self.base_link.name)
@@ -161,7 +163,7 @@ class Model:
             child_path = rr_path + "/" + joint.child.name
             self.link_path_map[joint.child.name] = child_path
             self._load_mesh(child_path, joint.child.visual, joint.transform)
-            if joint.child.collision is not None:
+            if joint.child.collision is not None and self.visualize_collisions:
                 child_collision_path = rr_path + "/" + joint.child.name + "/collision"
                 self._load_mesh(child_collision_path, joint.child.collision)
             self._traverse_joint_tree(child_path, joint.child.name)
