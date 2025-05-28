@@ -10,6 +10,7 @@ version = "0.1.0"
 move_franka = "pixi run python3 src/examples/move_franka.py"
 attach_franka = "pixi run python3 src/examples/attach_franka.py"
 multiple_frankas = "pixi run python3 src/examples/multiple_frankas.py"
+mujoco_franka = "pixi run python3 src/examples/mujoco_franka.py"
 
 [dependencies]
 python = ">=3.13,<3.14"
