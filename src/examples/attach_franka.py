@@ -2,6 +2,8 @@ from marionette.robots import franka_research_3
 import rerun as rr
 
 
+"""Attaches a Franka Research 3 robot to another Franka Research 3."""
+
 rr.init("", spawn=True)
 
 model1 = franka_research_3  # Creates an instance of the franka_research_3 robot model

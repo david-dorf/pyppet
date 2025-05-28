@@ -3,7 +3,7 @@ authors = ["david-dorf <davidjohndorf@gmail.com>"]
 channels = ["conda-forge"]
 description = "Robot model format using Python instead of XML for better type checking, logic, scripting, and parsing."
 name = "marionette"
-platforms = ["linux-64", "osx-arm64", "win-64"]  # taichi osx-64 only supported for macos11
+platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
 version = "0.1.0"
 
 [tasks]
@@ -19,5 +19,4 @@ pillow = ">=9.2.0, <11.0.0"
 rerun-sdk = ">=0.22.1, <0.23.0"
 
 [pypi-dependencies]
-genesis-world = "==0.2.1"
 marionette = { path = "./src", editable = true }

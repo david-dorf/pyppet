@@ -5,6 +5,8 @@ import time
 import math
 
 
+"""Moves non-rigid joints of a Franka Research 3 robot in a sinusoidal trajectory between limits."""
+
 rr.init("", spawn=True)
 
 i=0
@@ -12,7 +14,6 @@ franka_research_3.visualize()
 while True:
     try:
         for joint_name, joint in franka_research_3.joints.items():
-            # Move non-rigid joints in a sinusoidal trajectory between limits
             if isinstance(joint, RigidJoint):
                 continue
             if joint.limits is not None:

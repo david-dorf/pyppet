@@ -3,6 +3,8 @@ from marionette.format import Transform
 import rerun as rr
 
 
+"""Spawns multiple Franka Research 3 robots in a grid layout."""
+
 rr.init("", spawn=True)
 
 cols = 5

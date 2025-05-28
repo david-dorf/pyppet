@@ -10,7 +10,6 @@ dependencies = [
     "trimesh>=4.6.1,<5",
     "pycollada>=0.8,<0.9",
     "scipy>=1.15.1,<2",
-    "genesis-world>=0.2.1, <0.3.0",
 ]
 
 [project.license]
