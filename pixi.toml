@@ -12,10 +12,8 @@ attach_franka = "pixi run python3 src/examples/attach_franka.py"
 multiple_frankas = "pixi run python3 src/examples/multiple_frankas.py"
 
 [dependencies]
-python = ">=3.10,<3.12"
+python = ">=3.13,<3.14"
 rust = ">=1.84.0,<1.85"
-numpy = "==1.26.4"
-pillow = ">=9.2.0, <11.0.0"
 rerun-sdk = ">=0.22.1, <0.23.0"
 
 [pypi-dependencies]
