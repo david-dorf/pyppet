@@ -2,17 +2,17 @@ from marionette.format import Link, RigidJoint, RevoluteJoint, SliderJoint, Tran
 from math import pi
 
 
-link0 = Link(name = 'link0', visual = "link0.dae")
-link1 = Link(name = 'link1', visual = "link1.dae")
-link2 = Link(name = 'link2', visual = "link2.dae")
-link3 = Link(name = 'link3', visual = "link3.dae")
-link4 = Link(name = 'link4', visual = "link4.dae")
-link5 = Link(name = 'link5', visual = "link5.dae")
-link6 = Link(name = 'link6', visual = "link6.dae")
-link7 = Link(name = 'link7', visual = "link7.dae")
-hand = Link(name = 'hand', visual = "hand.dae")
-finger1 = Link(name = 'finger1', visual = "finger.dae")
-finger2 = Link(name = 'finger2', visual = "finger.dae")
+link0 = Link(name = 'link0', visual = "link0.stl")
+link1 = Link(name = 'link1', visual = "link1.stl")
+link2 = Link(name = 'link2', visual = "link2.stl")
+link3 = Link(name = 'link3', visual = "link3.stl")
+link4 = Link(name = 'link4', visual = "link4.stl")
+link5 = Link(name = 'link5', visual = "link5.stl")
+link6 = Link(name = 'link6', visual = "link6.stl")
+link7 = Link(name = 'link7', visual = "link7.stl")
+hand = Link(name = 'hand', visual = "hand.stl")
+finger1 = Link(name = 'finger1', visual = "finger.stl")
+finger2 = Link(name = 'finger2', visual = "finger.stl")
 
 joints = {
     "joint0": RevoluteJoint(

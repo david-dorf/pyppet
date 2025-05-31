@@ -100,7 +100,7 @@ class Model:
         self.transform = transform
         self.visualize_collisions = visualize_collisions
         self.pixi_root = Path(os.environ['PIXI_PROJECT_ROOT'])
-        self.mesh_path = self.pixi_root / "src" / "marionette" / "models" / name / "meshes"
+        self.mesh_path = self.pixi_root / "src" / "marionette" / "models" / name / "assets"
         self.parent_link_to_joints = {}  # Mapping of links to joints with them as the parent
         for joint_name, joint in self.joints.items():
             # Create an empty list for each parent link, and then fill it with joints
