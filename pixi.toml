@@ -12,6 +12,9 @@ attach_franka = "pixi run python3 src/examples/attach_franka.py"
 multiple_frankas = "pixi run python3 src/examples/multiple_frankas.py"
 mujoco_franka = "pixi run python3 src/examples/mujoco_franka.py"
 
+[target.osx.tasks]
+mujoco_franka = "pixi run mjpython src/examples/mujoco_franka.py"
+
 [dependencies]
 python = ">=3.13,<3.14"
 rust = ">=1.84.0,<1.85"
