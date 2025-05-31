@@ -1,5 +1,6 @@
 import mujoco
 import mujoco.viewer
+import ompl
 import os
 from pathlib import Path
 

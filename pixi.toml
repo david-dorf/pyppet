@@ -3,22 +3,30 @@ authors = ["david-dorf <davidjohndorf@gmail.com>"]
 channels = ["conda-forge"]
 description = "Robot model format using Python instead of XML for better type checking, logic, scripting, and parsing."
 name = "marionette"
-platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
+platforms = ["linux-64", "osx-arm64", "osx-64"]
 version = "0.1.0"
 
-[tasks]
-move_franka = "pixi run python3 src/examples/move_franka.py"
-attach_franka = "pixi run python3 src/examples/attach_franka.py"
-multiple_frankas = "pixi run python3 src/examples/multiple_frankas.py"
-mujoco_franka = "pixi run python3 src/examples/mujoco_franka.py"
+[system-requirements]
+macos = "15.0" # OMPL requirement for MacOS
 
 [target.osx.tasks]
-mujoco_franka = "pixi run mjpython src/examples/mujoco_franka.py"
+mujoco_franka = "mjpython src/examples/mujoco_franka.py" # MuJoCo requirement for MacOS
+
+[tasks]
+move_franka = "python3 src/examples/move_franka.py"
+attach_franka = "python3 src/examples/attach_franka.py"
+multiple_frankas = "python3 src/examples/multiple_frankas.py"
+mujoco_franka = "python3 src/examples/mujoco_franka.py"
 
 [dependencies]
-python = ">=3.13,<3.14"
-rust = ">=1.84.0,<1.85"
+python = ">=3.10, <3.13"
+rust = ">=1.84.0, <1.85"
 rerun-sdk = ">=0.22.1, <0.23.0"
+trimesh = ">=4.6.10, <5"
+pycollada = ">=0.8, <0.9"
+scipy = ">=1.15.2, <2"
+mujoco = ">=3.3.2, <4"
 
 [pypi-dependencies]
+ompl = ">=1.7.0, <2"
 marionette = { path = "./src", editable = true }
