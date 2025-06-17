@@ -87,12 +87,12 @@ class Model:
 
     Attributes:
         name: The name of the model.
-        joints: A dictionary of joints that the model is composed of.
+        joints: A list of joints that the model is composed of.
         base_link: The first link in the model kinematic chain.
         transform: An optional transform specifying the model translation and rotation.
         visualize_collisions: Enables collision mesh visualization if True.
     """
-    def __init__(self, name: str, joints: dict[str, Joint], base_link: Link, transform: Transform = Transform(), visualize_collisions: bool = False):
+    def __init__(self, name: str, joints: list[Joint], base_link: Link, transform: Transform = Transform(), visualize_collisions: bool = False):
         self.joints = joints
         self.base_link = base_link
         self.base_path = name + "/" + self.base_link.name
@@ -101,10 +101,10 @@ class Model:
         self.visualize_collisions = visualize_collisions
         self.pixi_root = Path(os.environ['PIXI_PROJECT_ROOT'])
         self.mesh_path = self.pixi_root / "src" / "marionette" / "models" / name / "assets"
-        self.parent_link_to_joints = {}  # Mapping of links to joints with them as the parent
-        for joint_name, joint in self.joints.items():
-            # Create an empty list for each parent link, and then fill it with joints
-            self.parent_link_to_joints.setdefault(joint.parent.name, []).append(joint)
+        self.parent_links_to_joints = {}
+        for joint in self.joints:
+            # Add joint to parent link's list of joints if it exists, otherwise create a new list
+            self.parent_links_to_joints.setdefault(joint.parent.name, []).append(joint)
 
     def visualize(self):
         """Visualize the model in Rerun."""
@@ -115,19 +115,19 @@ class Model:
         # Load all other meshes in the tree
         self._traverse_joint_tree(self.base_path, self.base_link.name)
 
-    def attach(self, other_model: "Model", joint_name: str, transform: Transform = Transform()):
+    def attach(self, other_model: "Model", joint_index: int, transform: Transform = Transform()):
         """Attach another model to this model at the specified joint and optional transform."""
-        joint = self.joints[joint_name]
+        joint = self.joints[joint_index]
         other_model.transform = transform
         other_model.base_path = self.link_path_map[joint.child.name] + "/" + other_model.base_link.name
         self.link_path_map.update(other_model.link_path_map)
         other_model.visualize()
 
-    def move_joint(self, joint_name: str, position: float):
+    def move_joint(self, joint_index: int, position: float):
         """Move the specified joint to the given position."""
-        joint = self.joints[joint_name]
+        joint = self.joints[joint_index]
         if isinstance(joint, RigidJoint):
-            raise ValueError("Rigid joints cannot be moved")
+            return
         rotation = Rotation.from_euler('xyz', joint.transform.rotation()).as_matrix()
         rr_path = self.link_path_map[joint.child.name]
         axis_unit_vector = (rotation @ joint.axis) / np.linalg.norm(rotation @ joint.axis)
@@ -154,12 +154,12 @@ class Model:
             transform=transform
         )
         copied_model.link_path_map = deepcopy(self.link_path_map)
-        copied_model.parent_link_to_joints = deepcopy(self.parent_link_to_joints)
+        copied_model.parent_links_to_joints = deepcopy(self.parent_links_to_joints)
         copied_model.mesh_path = self.mesh_path
         return copied_model
 
     def _traverse_joint_tree(self, rr_path: str, current_link_name: str):
-        for joint in self.parent_link_to_joints.get(current_link_name, []):
+        for joint in self.parent_links_to_joints.get(current_link_name, []):
             child_path = rr_path + "/" + joint.child.name
             self.link_path_map[joint.child.name] = child_path
             self._load_mesh(child_path, joint.child.visual, joint.transform)

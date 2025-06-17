@@ -13,14 +13,15 @@ i=0
 franka_research_3.visualize()
 while True:
     try:
-        for joint_name, joint in franka_research_3.joints.items():
+        for joint in franka_research_3.joints:
             if isinstance(joint, RigidJoint):
                 continue
             if joint.limits is not None:
                 midline = (joint.limits[0] + joint.limits[1]) / 2
                 amplitude = (joint.limits[0] - joint.limits[1]) / 2
                 position = midline + amplitude * math.sin(i)
-                franka_research_3.move_joint(joint_name, position)
+                joint_index = franka_research_3.joints.index(joint)
+                franka_research_3.move_joint(joint_index, position)
         i+=0.01
         time.sleep(0.01)  # Add a small delay to control the speed of the movement
     except KeyboardInterrupt:
