@@ -7,8 +7,6 @@ name = "marionette"
 version = "0.1.0"
 dependencies = [
     "rerun-sdk>=0.22.1, <0.23.0",
-    "trimesh>=4.6.1, <5",
-    "pycollada>=0.8, <0.9",
     "scipy>=1.15.1, <2",
     "mujoco>=3.3.2, <4",
 ]

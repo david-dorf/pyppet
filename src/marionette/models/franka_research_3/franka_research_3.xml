@@ -8,9 +8,6 @@
       <!-- Overwritten in joints 5, 6, and 7. -->
       <joint damping="0.21" armature="0.195" frictionloss="1.137" />
       <position inheritrange="1" />
-      <default class="visual">
-        <geom type="mesh" group="2" contype="0" conaffinity="0" />
-      </default>
       <default class="collision">
         <geom type="mesh" group="3" mass="0" density="0" />
       </default>
@@ -18,20 +15,19 @@
   </default>
 
   <asset>
-    <mesh name="link0" file="link0.stl" />
-    <mesh name="link1" file="link1.stl" />
-    <mesh name="link2" file="link2.stl" />
-    <mesh name="link3" file="link3.stl" />
-    <mesh name="link4" file="link4.stl" />
-    <mesh name="link5" file="link5.stl" />
-    <mesh name="link6" file="link6.stl" />
-    <mesh name="link7" file="link7.stl" />
+    <mesh name="link0" file="collision/link0.stl" />
+    <mesh name="link1" file="collision/link1.stl" />
+    <mesh name="link2" file="collision/link2.stl" />
+    <mesh name="link3" file="collision/link3.stl" />
+    <mesh name="link4" file="collision/link4.stl" />
+    <mesh name="link5" file="collision/link5.stl" />
+    <mesh name="link6" file="collision/link6.stl" />
+    <mesh name="link7" file="collision/link7.stl" />
   </asset>
 
   <worldbody>
     <body name="base" childclass="franka_research_3">
       <body name="link0">
-        <geom mesh="link0" class="visual" />
         <geom mesh="link0" class="collision" />
         <body name="link1" pos="0 0 0.333">
           <inertial
@@ -41,7 +37,6 @@
                         diaginertia="0.0239286 0.0227246 0.00610634"
                     />
           <joint name="joint1" axis="0 0 1" range="-2.7437 2.7437" actuatorfrcrange="-87 87" />
-          <geom mesh="link1" class="visual" />
           <geom mesh="link1" class="collision" />
           <body name="link2" quat="1 -1 0 0">
             <inertial
@@ -51,7 +46,6 @@
                             diaginertia="0.0629567 0.0411924 0.0246371"
                         />
             <joint name="joint2" axis="0 0 1" range="-1.7837 1.7837" actuatorfrcrange="-87 87" />
-            <geom mesh="link2" class="visual" />
             <geom mesh="link2" class="collision" />
             <body name="link3" pos="0 -0.316 0" quat="1 1 0 0">
               <inertial
@@ -61,7 +55,6 @@
                                 diaginertia="0.0267409 0.0189869 0.0171587"
                             />
               <joint name="joint3" axis="0 0 1" range="-2.9007 2.9007" actuatorfrcrange="-87 87" />
-              <geom mesh="link3" class="visual" />
               <geom mesh="link3" class="collision" />
               <body name="link4" pos="0.0825 0 0" quat="1 1 0 0">
                 <inertial
@@ -76,7 +69,6 @@
                                     range="-3.0421 -0.1518"
                                     actuatorfrcrange="-87 87"
                                 />
-                <geom mesh="link4" class="visual" />
                 <geom mesh="link4" class="collision" />
                 <body name="link5" pos="-0.0825 0.384 0" quat="1 -1 0 0">
                   <inertial
@@ -93,7 +85,6 @@
                                         armature="0.074"
                                         frictionloss="0.763"
                                     />
-                  <geom mesh="link5" class="visual" />
                   <geom mesh="link5" class="collision" />
                   <body name="link6" quat="1 1 0 0">
                     <inertial
@@ -110,7 +101,6 @@
                                             armature="0.074"
                                             frictionloss="0.44"
                                         />
-                    <geom mesh="link6" class="visual" />
                     <geom mesh="link6" class="collision" />
                     <body name="link7" pos="0.088 0 0" quat="1 1 0 0">
                       <inertial
@@ -127,7 +117,6 @@
                                                 armature="0.074"
                                                 frictionloss="0.248"
                                             />
-                      <geom mesh="link7" class="visual" />
                       <geom mesh="link7" class="collision" />
                       <site name="attachment_site" pos="0 0 0.107" />
                     </body>

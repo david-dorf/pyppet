@@ -2,19 +2,19 @@ from marionette.format import Link, RigidJoint, RevoluteJoint, SliderJoint, Tran
 from math import pi
 
 
-link0 = Link(name = 'link0', visual = "link0.stl")
-link1 = Link(name = 'link1', visual = "link1.stl")
-link2 = Link(name = 'link2', visual = "link2.stl")
-link3 = Link(name = 'link3', visual = "link3.stl")
-link4 = Link(name = 'link4', visual = "link4.stl")
-link5 = Link(name = 'link5', visual = "link5.stl")
-link6 = Link(name = 'link6', visual = "link6.stl")
-link7 = Link(name = 'link7', visual = "link7.stl")
-hand = Link(name = 'hand', visual = "hand.stl")
-finger1 = Link(name = 'finger1', visual = "finger.stl")
-finger2 = Link(name = 'finger2', visual = "finger.stl")
+link0 = Link(name = 'link0', visual = "visual/link0.glb")
+link1 = Link(name = 'link1', visual = "visual/link1.glb")
+link2 = Link(name = 'link2', visual = "visual/link2.glb")
+link3 = Link(name = 'link3', visual = "visual/link3.glb")
+link4 = Link(name = 'link4', visual = "visual/link4.glb")
+link5 = Link(name = 'link5', visual = "visual/link5.glb")
+link6 = Link(name = 'link6', visual = "visual/link6.glb")
+link7 = Link(name = 'link7', visual = "visual/link7.glb")
+hand = Link(name = 'hand', visual = "visual/hand.glb")
+finger1 = Link(name = 'finger1', visual = "visual/finger.glb")
+finger2 = Link(name = 'finger2', visual = "visual/finger.glb")
 
-j0 = RevoluteJoint(
+joint0 = RevoluteJoint(
     parent = link0,
     child = link1,
     transform = Transform(z = 0.333),
@@ -22,75 +22,75 @@ j0 = RevoluteJoint(
     limits = (-2.8973, 2.8973),
 )
 
-j1 = RevoluteJoint(
+joint1 = RevoluteJoint(
     parent = link1,
     child = link2,
-    transform = Transform(roll = -pi/2),
-    axis = (0, 0, 1),
+    transform = Transform(),
+    axis = (0, 1, 0),
     limits = (-1.7628, 1.7628),
 )
 
-j2 = RevoluteJoint(
+joint2 = RevoluteJoint(
     parent = link2,
     child = link3,
-    transform = Transform(y = -0.316, roll = pi/2),
+    transform = Transform(z = 0.316),
     axis = (0, 0, 1),
     limits = (-2.8973, 2.8973),
 )
 
-j3 = RevoluteJoint(
+joint3 = RevoluteJoint(
     parent = link3,
     child = link4,
-    transform = Transform(x = 0.0825, roll = pi/2),
-    axis = (0, 0, 1),
-    limits = (-3.0718, -0.0698),
+    transform = Transform(x = 0.0825),
+    axis = (0, 1, 0),
+    limits = (0.0698, 3.0718),
 )
 
-j4 = RevoluteJoint(
+joint4 = RevoluteJoint(
     parent = link4,
     child = link5,
-    transform = Transform(x = -0.0825, y = 0.384, roll = -pi/2),
+    transform = Transform(x = -0.0825, z = 0.384),
     axis = (0, 0, 1),
     limits = (-2.8973, 2.8973),
 )
 
-j5 = RevoluteJoint(
+joint5 = RevoluteJoint(
     parent = link5,
     child = link6,
-    transform = Transform(roll = pi/2),
-    axis = (0, 0, 1),
+    transform = Transform(),
+    axis = (0, 1, 0),
     limits = (0.5445, 4.5169)
 )
 
-j6 = RevoluteJoint(
+joint6 = RevoluteJoint(
     parent = link6,
     child = link7,
-    transform = Transform(x = 0.088, roll = pi/2),
+    transform = Transform(x = 0.088),
     axis = (0, 0, 1),
     limits = (-2.8973, 2.8973)
 )
 
-j7 = RigidJoint(
+joint7 = RigidJoint(
     parent = link7,
     child = hand,
-    transform = Transform(z = 0.107)
+    transform = Transform(z = -0.107)
 )
 
-j8 = SliderJoint(
+joint8 = SliderJoint(
     parent = hand,
     child = finger1,
-    transform = Transform(z = 0.0584),
+    transform = Transform(z = -0.0584),
     axis = (0, 1, 0),
-    limits = (0, 0.04)
+    limits = (0, -0.04)
 )
 
-j9 = SliderJoint(
+joint9 = SliderJoint(
     parent = hand,
     child = finger2,
-    transform = Transform(z = 0.0584, yaw = pi),
+    transform = Transform(z = -0.0584, yaw = pi),
     axis = (0, 1, 0),
-    limits = (0, 0.04)
+    limits = (0, -0.04)
 )
 
-joints = [j0, j1, j2, j3, j4, j5, j6, j7, j8, j9]
-franka_research_3 = Model(name = "franka_research_3", joints = joints, base_link = link0)
+joints = [joint0, joint1, joint2, joint3, joint4, joint5, joint6, joint7, joint8, joint9]
+franka_research_3 = Model(name = "franka_research_3", joints = joints, base = link0)

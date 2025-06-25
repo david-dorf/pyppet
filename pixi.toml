@@ -22,8 +22,6 @@ mujoco_franka = "python3 src/examples/mujoco_franka.py"
 python = ">=3.10, <3.13"
 rust = ">=1.84.0, <1.85"
 rerun-sdk = ">=0.22.1, <0.23.0"
-trimesh = ">=4.6.10, <5"
-pycollada = ">=0.8, <0.9"
 scipy = ">=1.15.2, <2"
 mujoco = ">=3.3.2, <4"
 

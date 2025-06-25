@@ -13,5 +13,5 @@ spacing = 1.0
 for i in range(rows * cols):
     row = i // cols
     col = i % cols
-    new_model = franka_research_3.copy(f"franka_{i}", Transform(x=row, y=col))
+    new_model = franka_research_3.copy(name = f"franka_{i}", origin = Transform(x=row, y=col))
     new_model.visualize()
