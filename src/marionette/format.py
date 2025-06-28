@@ -57,7 +57,7 @@ class RevoluteJoint:
     child: Link
     transform: Transform
     axis: tuple[float, float, float]
-    limits: tuple[float, float] | None
+    limits: tuple[float, float] | None = None
 
 @dataclass
 class SliderJoint:

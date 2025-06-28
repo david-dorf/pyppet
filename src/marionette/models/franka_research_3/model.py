@@ -42,8 +42,8 @@ joint3 = RevoluteJoint(
     parent = link3,
     child = link4,
     transform = Transform(x = 0.0825),
-    axis = (0, 1, 0),
-    limits = (0.0698, 3.0718),
+    axis = (0, -1, 0),
+    limits = (-3.0718, -0.0696),
 )
 
 joint4 = RevoluteJoint(
@@ -58,8 +58,8 @@ joint5 = RevoluteJoint(
     parent = link5,
     child = link6,
     transform = Transform(),
-    axis = (0, 1, 0),
-    limits = (0.5445, 4.5169)
+    axis = (0, -1, 0),
+    limits = (-0.0175, 3.7525),
 )
 
 joint6 = RevoluteJoint(
