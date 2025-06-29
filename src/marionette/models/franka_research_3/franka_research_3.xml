@@ -105,7 +105,7 @@
                                         />
                     <joint
                                             name="joint5"
-                                            axis="0 0 1"
+                                            axis="0 -1 0"
                                             range="-0.0175 3.7525"
                                             actuatorfrcrange="-12 12"
                                             armature="0.074"
@@ -130,7 +130,7 @@
                                             />
                       <geom mesh="link7" class="collision" />
                       <geom mesh="link7" class="visual" />
-                      <body name="hand" pos="0 0 0.107">
+                      <body name="hand" pos="0 0 -0.107">
                         <inertial
                                                     mass="0.73"
                                                     pos="-0.01 0 0.03"
@@ -151,13 +151,13 @@
   </worldbody>
 
   <actuator>
-    <position class="franka_research_3" name="joint0" joint="joint0" kp="4500" kv="450" />
-    <position class="franka_research_3" name="joint1" joint="joint1" kp="4500" kv="450" />
-    <position class="franka_research_3" name="joint2" joint="joint2" kp="3500" kv="350" />
-    <position class="franka_research_3" name="joint3" joint="joint3" kp="3500" kv="350" />
-    <position class="franka_research_3" name="joint4" joint="joint4" kp="2000" kv="200" />
-    <position class="franka_research_3" name="joint5" joint="joint5" kp="2000" kv="200" />
-    <position class="franka_research_3" name="joint6" joint="joint6" kp="2000" kv="200" />
+    <position class="franka_research_3" name="joint0" joint="joint0" kp="160" kv="50" />
+    <position class="franka_research_3" name="joint1" joint="joint1" kp="160" kv="50" />
+    <position class="franka_research_3" name="joint2" joint="joint2" kp="160" kv="50" />
+    <position class="franka_research_3" name="joint3" joint="joint3" kp="160" kv="50" />
+    <position class="franka_research_3" name="joint4" joint="joint4" kp="80" kv="50" />
+    <position class="franka_research_3" name="joint5" joint="joint5" kp="80" kv="50" />
+    <position class="franka_research_3" name="joint6" joint="joint6" kp="80" kv="50" />
   </actuator>
 
 </mujoco>
