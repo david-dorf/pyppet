@@ -1,1 +1,0 @@
-from marionette.models.franka_research_3.model import franka_research_3
