@@ -5,11 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "marionette"
 version = "0.1.0"
-dependencies = [
-    "rerun-sdk>=0.22.1, <0.23.0",
-    "scipy>=1.15.1, <2",
-    "mujoco>=3.3.2, <4",
-]
+dependencies = ["rerun-sdk>=0.22.1, <0.23.0", "scipy>=1.15.1, <2"]
 
 [project.license]
 text = "Apache-2.0"
