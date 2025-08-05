@@ -1,10 +1,8 @@
+from .rotation import rotation_matrix_from_euler
 import rerun as rr
 from dataclasses import dataclass
-from scipy.spatial.transform import Rotation
-import numpy as np
-import os
-from pathlib import Path
 from copy import deepcopy
+import numpy as np
 
 
 @dataclass
@@ -50,51 +48,50 @@ class Model:
         name: The name of the model.
         joints: A list of joints that the model is composed of.
         base: The first link in the model kinematic chain.
-        origin: An optional pose specifying the model translation and rotation.
+        pose: An optional pose specifying the model translation and rotation.
     """
-    def __init__(self, name: str, joints: list[Joint], base: Link, origin: Pose = Pose()):
+    def __init__(self, name: str, joints: list[Joint], base: Link, path: str, pose: Pose = Pose()):
         self.joints = joints
         self.base_link = base
-        self.base_link_path = name + "/" + self.base_link.name
-        self.link_path_map = {self.base_link.name: self.base_link_path}
-        self.origin = origin
-        self.pixi_root = Path(os.environ['PIXI_PROJECT_ROOT'])
-        self.asset_path = self.pixi_root / "src" / "marionette" / "models" / name / "assets"
+        self.path = path
+        self.pose = pose
+        self.base_link_id = name + "/" + self.base_link.name  # For Rerun logging tree structure
+        self.link_path_map = {self.base_link.name: self.base_link_id}
         self.parent_link_to_joints = {}
         for joint in self.joints:
             self.parent_link_to_joints.setdefault(joint.parent.name, []).append(joint)
 
     def _load_asset(self, rr_path: str, visual_file: str, pose: Pose = Pose()):
-        rotation = Rotation.from_euler('xyz', pose.rotation).as_matrix()
-        asset = rr.Asset3D(path=f"{self.asset_path}/{visual_file}")
+        rotation = rotation_matrix_from_euler(pose.rotation)
+        asset = rr.Asset3D(path=f"{self.path}/{visual_file}")
         rr.log(rr_path, asset, rr.Transform3D(translation=pose.translation, mat3x3=rotation))
 
     def _traverse_joint_tree(self, rr_path: str, current_link_name: str):
         for joint in self.parent_link_to_joints.get(current_link_name, []):
             child_path = rr_path + "/" + joint.child.name
             self.link_path_map[joint.child.name] = child_path
-            self._load_asset(child_path, joint.child.visual, joint.transform)
+            self._load_asset(child_path, joint.child.visual, joint.pose)
             self._traverse_joint_tree(child_path, joint.child.name)
 
     def visualize(self):
         """Visualize the model in Rerun."""
-        self._load_asset(self.base_link_path, self.base_link.visual, self.origin)
-        self._traverse_joint_tree(self.base_link_path, self.base_link.name)
+        self._load_asset(self.base_link_id, self.base_link.visual, self.pose)
+        self._traverse_joint_tree(self.base_link_id, self.base_link.name)
 
     def attach(self, other_model: "Model", joint_index: int, pose: Pose = Pose()):
         """Attach another model to this model at the specified joint and optional pose."""
         joint = self.joints[joint_index]
-        other_model.origin = pose
-        other_model.base_link_path = self.link_path_map[joint.child.name] + "/" + other_model.base_link.name
+        other_model.pose = pose
+        other_model.base_link_id = self.link_path_map[joint.child.name] + "/" + other_model.base_link.name
         self.link_path_map.update(other_model.link_path_map)
         other_model.visualize()
 
     def move_joint(self, joint_index: int, position: float):
-        """Move the specified joint to the given position."""
+        """Move the specified non-rigid joint to the given position."""
         joint = self.joints[joint_index]
-        if isinstance(joint, RigidJoint):
+        if not isinstance(joint, RevoluteJoint) or isinstance(joint, SliderJoint):
             return
-        rotation = Rotation.from_euler('xyz', joint.pose.rotation).as_matrix()
+        rotation = rotation_matrix_from_euler(joint.pose.rotation)
         axis_unit_vector = (rotation @ joint.axis) / np.linalg.norm(rotation @ joint.axis)
         rr_path = self.link_path_map[joint.child.name]
         if joint.limits is not None:
@@ -108,12 +105,12 @@ class Model:
             rotation = rr.RotationAxisAngle(axis=axis_unit_vector, radians=position)
             rr.log(rr_path, rr.Transform3D(rotation=rotation, clear=False))
 
-    def copy(self, name: str, origin: Pose = Pose()) -> "Model":
+    def copy(self, name: str, pose: Pose = Pose()) -> "Model":
         """Return a deep copy of the model with a new name and pose."""
         joints = deepcopy(self.joints)
         base_link = deepcopy(self.base_link)
-        copied_model = Model(name=name, joints=joints, base=base_link, origin=origin)
+        path = deepcopy(self.path)
+        copied_model = Model(name=name, joints=joints, base=base_link, path=path, pose=pose)
         copied_model.link_path_map = deepcopy(self.link_path_map)
         copied_model.parent_link_to_joints = deepcopy(self.parent_link_to_joints)
-        copied_model.asset_path = self.asset_path
         return copied_model
