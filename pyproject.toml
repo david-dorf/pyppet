@@ -9,3 +9,17 @@ dependencies = ["rerun-sdk>=0.23.0", "scipy>=1.15.1, <2"]
 
 [project.license]
 text = "Apache-2.0"
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+
+[tool.pixi.pypi-dependencies]
+# Remove in the future
+marionette = { path = ".", editable = true }
+marionette_models = { path = "../marionette_models", editable = true }
+
+[tool.pixi.tasks]
+attach_franka = "python3 examples/franka_research_3/attach_franka.py"
+move_franka = "python3 examples/franka_research_3/move_franka.py"
+multiple_frankas = "python3 examples/franka_research_3/multiple_frankas.py"
