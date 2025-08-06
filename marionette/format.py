@@ -22,19 +22,25 @@ class Pose:
 @dataclass
 class RigidJoint:
     """Joint that does not allow translation or rotation. Base class for all other joints."""
-    parent: 'Link'
-    child: 'Link'
-    pose: 'Pose'
+    parent: Link
+    child: Link
+    pose: Pose
 
 @dataclass
-class RevoluteJoint(RigidJoint):
+class RevoluteJoint:
     """Joint that allows rotation around a single axis."""
+    parent: Link
+    child: Link
+    pose: Pose
     axis: tuple[float, float, float]
     limits: tuple[float, float] | None = None
 
 @dataclass
-class SliderJoint(RigidJoint):
+class SliderJoint:
     """Joint that allows translation along a single axis."""
+    parent: Link
+    child: Link
+    pose: Pose
     axis: tuple[float, float, float]
     limits: tuple[float, float]
 
@@ -86,10 +92,9 @@ class Model:
         self.link_path_map.update(other_model.link_path_map)
         other_model.visualize()
 
-    def move_joint(self, joint_index: int, position: float):
+    def move_joint(self, joint: Joint, position: float):
         """Move the specified non-rigid joint to the given position."""
-        joint = self.joints[joint_index]
-        if not isinstance(joint, RevoluteJoint) or isinstance(joint, SliderJoint):
+        if isinstance(joint, RigidJoint):
             return
         rotation = rotation_matrix_from_euler(joint.pose.rotation)
         axis_unit_vector = (rotation @ joint.axis) / np.linalg.norm(rotation @ joint.axis)
