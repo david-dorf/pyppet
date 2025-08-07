@@ -10,3 +10,6 @@ dependencies = ["numpy>=1.21.0", "rerun-sdk>=0.23.0"]
 
 [project.license]
 text = "Apache-2.0"
+
+[project.urls]
+Homepage = "https://github.com/david-dorf/marionette_models"
