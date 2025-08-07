@@ -1,4 +1,4 @@
-from marion.rotation import rotation_matrix_from_euler
+from pyppet.rotation import rotation_matrix_from_euler
 import numpy as np
 
 
