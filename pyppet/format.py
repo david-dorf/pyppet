@@ -9,7 +9,7 @@ import numpy as np
 class Link:
     """Rigid component in a robot. Contains name, visual asset file, and optional collision/mass."""
     name: str
-    visual: str
+    visual: str | None = None
     collision: str | None = None
     mass: float | None = None
 
@@ -67,8 +67,11 @@ class Model:
         for joint in self.joints:
             self.parent_link_to_joints.setdefault(joint.parent.name, []).append(joint)
 
-    def _load_asset(self, rr_path: str, visual_file: str, pose: Pose = Pose()):
+    def _load_asset(self, rr_path: str, visual_file: str | None, pose: Pose = Pose()):
         rotation = rotation_matrix_from_euler(pose.rotation)
+        if visual_file is None:
+            rr.log(rr_path, rr.Transform3D(translation=pose.translation, mat3x3=rotation))
+            return
         asset = rr.Asset3D(path=f"{self.path}/{visual_file}")
         rr.log(rr_path, asset, rr.Transform3D(translation=pose.translation, mat3x3=rotation))
 
