@@ -21,7 +21,7 @@ class Pose:
 
 @dataclass
 class RigidJoint:
-    """Joint that does not allow translation or rotation. Base class for all other joints."""
+    """Joint that does not allow translation or rotation."""
     parent: Link
     child: Link
     pose: Pose
