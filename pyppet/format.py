@@ -1,43 +1,63 @@
-from copy import deepcopy
+class Sphere:
+    radius: float
 
+class Box:
+    width: float
+    height: float
+    depth: float
 
-class Link:
-    """Rigid component in a robot. Contains name, visual, collision, and mass."""
-    name: str
-    visual: str | None = None
-    collision: str | None = None
-    mass: float | None = None
+class Cylinder:
+    radius: float
+    height: float
+
+class Mesh:
+    filename: str
+
+Geometry = Sphere | Box | Cylinder | Mesh
 
 class Pose:
     """The position and orientation of an object."""
     translation: tuple[float, float, float] = (0.0, 0.0, 0.0)
     rotation: tuple[float, float, float] = (0.0, 0.0, 0.0)
 
-class JointCore:
-    """Base class for all joints."""
+class Physics:
+    """Physical properties of an object. Inertia is in the order of xx, yy, zz, xy, xz, yz."""
+    mass: float | None = None
+    inertia: tuple[float, float, float, float, float, float] | None = None
+    center_of_mass: Pose | None = None
+    friction: float | None = None
+
+class Visual:
+    """Visual properties of an object. Color is in the order of red, green, blue [0.0 to 1.0]."""
+    geometry: Geometry | None = None
+    color: tuple[float, float, float] | None = None
+
+class Link:
+    """Rigid component in a robot. Contains name, visual, collision, and physical properties."""
+    name: str
+    visual: Visual | None = None
+    collision: Geometry | None = None
+    physics: Physics | None = None
+
+class RigidJoint:
+    """Connection that does not allow translation or rotation between parent and child links."""
     parent: Link
     child: Link
     pose: Pose
     _subjoints: list['Joint'] = []
 
-class RigidJoint(JointCore):
-    """Joint that does not allow translation or rotation."""
-    parent: Link
-    child: Link
-    pose: Pose
-    _subjoints: list['Joint'] = []
-
-class RevoluteJoint(JointCore):
-    """Joint that allows rotation around a single axis."""
+class MobileJoint(RigidJoint):
+    """Base class for joints that allow translation or rotation between parent and child links."""
     axis: tuple[float, float, float]
     limits: tuple[float, float] | None = None
-    _subjoints: list['Joint'] = []
+    friction: float | None = None
+    damping: float | None = None
 
-class SliderJoint(JointCore):
-    """Joint that allows translation along a single axis."""
-    axis: tuple[float, float, float]
-    limits: tuple[float, float]
-    _subjoints: list['Joint'] = []
+class RevoluteJoint(MobileJoint):
+    """Joint for rotation around an axis. The rotation is continuous when limits are None."""
+
+class SliderJoint(MobileJoint):
+    """Joint for translation along an axis."""
 
 Joint = RigidJoint | RevoluteJoint | SliderJoint
 
@@ -53,11 +73,12 @@ class Model:
     """
     def __init__(self, name: str, joints: list[Joint], base: Link, pose: Pose = Pose()):
         self.name = name
-        self.base = base
         self.joints = joints
+        self.base = base
         self.pose = pose
 
     def _generate_joint_tree(self):
+        """Appends subjoints when a joint child is the same as another joint parent."""
         joint_to_parent_map = {}
         for joint in self.joints:
             joint_to_parent_map[joint] = joint.parent
@@ -69,11 +90,4 @@ class Model:
         """Attach another model to this model at the specified joint and optional pose."""
         joint.child = other_model.base
         other_model.pose = pose
-        self._generate_joint_tree()  # Regenerate the joint tree after attachment
-
-    def clone_model(self, name: str, pose: Pose = Pose()) -> "Model":
-        """Return a deep copy of the model with a new name and pose."""
-        joints = deepcopy(self.joints)
-        base = deepcopy(self.base)
-        copied_model = Model(name=name, joints=joints, base=base, pose=pose)
-        return copied_model
+        self._generate_joint_tree()
