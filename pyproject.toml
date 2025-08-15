@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "pyppet"
 description = "pyppet is a robot model format that uses Python instead of XML for better type checking, logic, scripting, and parsing"
 requires-python = ">=3.10, <3.13"
-version = "1.0.0"
+version = "1.0.1"
 
 [project.license]
 text = "MIT"
