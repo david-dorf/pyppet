@@ -5,28 +5,34 @@ from dataclasses import dataclass
 class Sphere:
     radius: float
 
+
 @dataclass
 class Box:
     width: float
     height: float
     depth: float
 
+
 @dataclass
 class Cylinder:
     radius: float
     height: float
 
+
 @dataclass
 class Mesh:
     filename: str
 
+
 Geometry = Sphere | Box | Cylinder | Mesh
+
 
 @dataclass
 class Pose:
     """The position and orientation of an object."""
     translation: tuple[float, float, float] = (0.0, 0.0, 0.0)
     rotation: tuple[float, float, float] = (0.0, 0.0, 0.0)
+
 
 @dataclass
 class Physics:
@@ -36,11 +42,13 @@ class Physics:
     center_of_mass: Pose | None = None
     friction: float | None = None
 
+
 @dataclass
 class Visual:
     """Visual properties of an object. Color is in the order of red, green, blue [0.0 to 1.0]."""
     geometry: Geometry | None = None
     color: tuple[float, float, float] | None = None
+
 
 @dataclass
 class Link:
@@ -50,6 +58,12 @@ class Link:
     collision: Geometry | None = None
     physics: Physics | None = None
 
+@dataclass
+class Limits:
+    position_range: tuple[float, float] | None = None
+    velocity: float | None = None
+    force: float | None = None
+
 class RigidJoint:
     """Connection that does not allow translation or rotation between parent and child links."""
     def __init__(self, parent: Link, child: Link, pose: Pose):
@@ -58,13 +72,17 @@ class RigidJoint:
         self.pose = pose
         self._subjoints: list['Joint'] = []
 
+
 class MobileJoint(RigidJoint):
     """Base class for joints that allow translation or rotation between parent and child links."""
-    def __init__(self, parent: Link, child: Link, pose: Pose, axis: tuple[float, float, float], limits: tuple[float, float] | None = None, friction: float | None = None, damping: float | None = None):
+    def __init__(self, parent: Link, child: Link, pose: Pose, axis: tuple[float, float, float], limits: Limits | None = None, friction: float | None = None, damping: float | None = None):
         super().__init__(parent, child, pose)
         self.axis = axis
         self._subjoints: list['Joint'] = []
-        self.limits = limits
+        if limits is not None:
+            self.position_range = limits.position_range
+            self.velocity_limit = limits.velocity
+            self.force_limit = limits.force
         self.friction = friction
         self.damping = damping
         self._position = 0.0
@@ -72,13 +90,21 @@ class MobileJoint(RigidJoint):
     def set_position(self, position: float):
         self._position = position
 
+    def get_position(self) -> float:
+        return self._position
+
+
 class RevoluteJoint(MobileJoint):
     """Joint for rotation around an axis."""
+
 
 class SliderJoint(MobileJoint):
     """Joint for translation along an axis."""
 
+
 Joint = RigidJoint | RevoluteJoint | SliderJoint
+JointList = list[Joint] | list[RigidJoint] | list[RevoluteJoint] | list[SliderJoint]
+
 
 class Model:
     """
@@ -90,15 +116,16 @@ class Model:
         base: The first link in the model kinematic chain.
         pose: An optional pose specifying the model translation and rotation.
     """
-    def __init__(self, name: str, joints: list[Joint], base: Link, pose: Pose = Pose()):
+    def __init__(self, name: str, joints: JointList, base: Link, pose: Pose = Pose()):
         self.name = name
         self.joints = joints
         self.base = base
         self.pose = pose
+        self.links = self._generate_link_list()
         self._generate_joint_tree()
 
     def _generate_joint_tree(self):
-        """Appends subjoints when a joint child is the same as another joint parent."""
+        """Appends subjoints to joints when a joint child is the same as another joint parent."""
         child_to_joint_map = {}
         for joint in self.joints:
             child_to_joint_map[joint.child.name] = joint
@@ -106,6 +133,13 @@ class Model:
             if joint.parent.name in child_to_joint_map:
                 if joint.parent.name == child_to_joint_map[joint.parent.name].child.name:
                     joint._subjoints.append(joint)
+
+    def _generate_link_list(self) -> list[Link]:
+        """Generates a list of links in the model."""
+        link_list = [self.base]
+        for joint in self.joints:
+            link_list.append(joint.child)
+        return link_list
 
     def attach_model(self, other_model: "Model", joint: Joint, pose: Pose = Pose()):
         """Attach another model to this model at the specified joint and optional pose."""

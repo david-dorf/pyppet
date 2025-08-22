@@ -13,3 +13,10 @@ text = "MIT"
 
 [project.urls]
 Homepage = "https://github.com/david-dorf/pyppet"
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
+
+[tool.pixi.tasks]
+example_model = "python -m examples.ros2.pyppet_example.urdf.example_model"
