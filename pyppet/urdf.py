@@ -11,7 +11,8 @@ def geometry_to_urdf(geometry):
     elif isinstance(geometry, pyf.Cylinder):
         return ET.Element("cylinder", radius=str(geometry.radius), length=str(geometry.height))
     elif isinstance(geometry, pyf.Mesh):
-        return ET.Element("mesh", filename=geometry.filename)
+        return ET.Element("mesh", filename=geometry.filename,
+            scale=f"{geometry.scale[0]} {geometry.scale[1]} {geometry.scale[2]}")
     return None
 
 
@@ -153,11 +154,11 @@ def joint_to_urdf(joint: pyf.Joint):
     return joint_el
 
 
-def model_to_urdf(model: pyf.Model, file_name: str) -> str:
-    """Convert a pyf.Model object to a URDF string and save it to a file.
+def pyppet_to_urdf(model: pyf.Model, file_name: str) -> str:
+    """Convert a pyppet model object to a URDF string and save it to a file.
 
     Args:
-        model (pyf.Model): The pyf.Model object to convert.
+        model (Model): The pyppet Model object to convert.
         file_name (str): The name of the file to save the URDF string to.
 
     Returns:

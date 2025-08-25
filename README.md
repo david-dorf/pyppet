@@ -5,4 +5,4 @@ pyppet is a robot model format that uses Python instead of XML for better type c
 `pip install pyppet`
 
 ## Examples
-Examples can be found at https://github.com/david-dorf/pyppet_models
+Examples can be found at https://github.com/david-dorf/pyppet_models, as well as the basic example contained within this repository.

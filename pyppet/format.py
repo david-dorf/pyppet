@@ -5,6 +5,10 @@ from dataclasses import dataclass
 class Sphere:
     radius: float
 
+    def __post_init__(self):
+        if self.radius <= 0:
+            raise ValueError(f"Invalid radius: {self.radius}. Radius must be positive.")
+
 
 @dataclass
 class Box:
@@ -12,16 +16,35 @@ class Box:
     height: float
     depth: float
 
+    def __post_init__(self):
+        if self.width <= 0:
+            raise ValueError(f"Invalid width: {self.width}. Width must be positive.")
+        if self.height <= 0:
+            raise ValueError(f"Invalid height: {self.height}. Height must be positive.")
+        if self.depth <= 0:
+            raise ValueError(f"Invalid depth: {self.depth}. Depth must be positive.")
+
 
 @dataclass
 class Cylinder:
     radius: float
     height: float
 
+    def __post_init__(self):
+        if self.radius <= 0:
+            raise ValueError(f"Invalid radius: {self.radius}. Radius must be positive.")
+        if self.height <= 0:
+            raise ValueError(f"Invalid height: {self.height}. Height must be positive.")
+
 
 @dataclass
 class Mesh:
     filename: str
+    scale: tuple[float, float, float] = (1.0, 1.0, 1.0)
+
+    def __post_init__(self):
+        if any(s <= 0 for s in self.scale):
+            raise ValueError(f"Invalid scale: {self.scale}. All scale values must be positive.")
 
 
 Geometry = Sphere | Box | Cylinder | Mesh
@@ -42,6 +65,14 @@ class Physics:
     center_of_mass: Pose | None = None
     friction: float | None = None
 
+    def __post_init__(self):
+        if self.mass is not None and self.mass <= 0:
+            raise ValueError(f"Invalid mass: {self.mass}. Mass must be positive.")
+
+        if self.inertia is not None:
+            if any(i < 0 for i in self.inertia):
+                raise ValueError(f"Invalid inertia: {self.inertia}. All inertia values must be positive.")
+
 
 @dataclass
 class Visual:
@@ -58,11 +89,13 @@ class Link:
     collision: Geometry | None = None
     physics: Physics | None = None
 
+
 @dataclass
 class Limits:
     position_range: tuple[float, float] | None = None
     velocity: float | None = None
     force: float | None = None
+
 
 class RigidJoint:
     """Connection that does not allow translation or rotation between parent and child links."""
