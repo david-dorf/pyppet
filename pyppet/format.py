@@ -159,13 +159,13 @@ class Model:
 
     def _generate_joint_tree(self):
         """Appends subjoints to joints when a joint child is the same as another joint parent."""
-        child_to_joint_map = {}
+        parent_to_joint_map = {}
         for joint in self.joints:
-            child_to_joint_map[joint.child.name] = joint
+            parent_to_joint_map[joint.parent.name] = joint
         for joint in self.joints:
-            if joint.parent.name in child_to_joint_map:
-                if joint.parent.name == child_to_joint_map[joint.parent.name].child.name:
-                    joint._subjoints.append(joint)
+            if joint.child.name in parent_to_joint_map:
+                if joint.child.name == parent_to_joint_map[joint.child.name].parent.name:
+                    joint._subjoints.append(parent_to_joint_map[joint.child.name])
 
     def _generate_link_list(self) -> list[Link]:
         """Generates a list of links in the model."""
@@ -173,6 +173,12 @@ class Model:
         for joint in self.joints:
             link_list.append(joint.child)
         return link_list
+
+    def traverse_joint_tree(self, joint: Joint):
+        """Traverses the joint tree starting from the specified joint."""
+        yield joint
+        for subjoint in joint._subjoints:
+            yield from self.traverse_joint_tree(subjoint)
 
     def attach_model(self, other_model: "Model", joint: Joint, pose: Pose = Pose()):
         """Attach another model to this model at the specified joint and optional pose."""
