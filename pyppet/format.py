@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from copy import deepcopy
+import uuid
 
 
 @dataclass
@@ -80,22 +82,20 @@ class Visual:
     geometry: Geometry | None = None
     color: tuple[float, float, float] | None = None
 
-
-@dataclass
-class Link:
-    """Rigid component in a robot. Contains name, visual, collision, and physical properties."""
-    name: str
-    visual: Visual | None = None
-    collision: Geometry | None = None
-    physics: Physics | None = None
-
-
 @dataclass
 class Limits:
     position_range: tuple[float, float] | None = None
     velocity: float | None = None
     force: float | None = None
 
+class Link:
+    """Rigid component in a robot. Contains name, visual, collision, and physical properties."""
+    def __init__(self, name: str, visual: Visual | None = None, collision: Geometry | None = None, physics: Physics | None = None):
+        self.name = name
+        self._id = uuid.uuid4()
+        self.visual = visual
+        self.collision = collision
+        self.physics = physics
 
 class RigidJoint:
     """Connection that does not allow translation or rotation between parent and child links."""
@@ -159,13 +159,13 @@ class Model:
 
     def _generate_joint_tree(self):
         """Appends subjoints to joints when a joint child is the same as another joint parent."""
-        parent_to_joint_map = {}
+        parent_id_to_joint_map = {}
         for joint in self.joints:
-            parent_to_joint_map[joint.parent.name] = joint
+            parent_id_to_joint_map[joint.parent._id] = joint
         for joint in self.joints:
-            if joint.child.name in parent_to_joint_map:
-                if joint.child.name == parent_to_joint_map[joint.child.name].parent.name:
-                    joint._subjoints.append(parent_to_joint_map[joint.child.name])
+            if joint.child._id in parent_id_to_joint_map:
+                if joint.child._id == parent_id_to_joint_map[joint.child._id].parent._id:
+                    joint._subjoints.append(parent_id_to_joint_map[joint.child._id])
 
     def _generate_link_list(self) -> list[Link]:
         """Generates a list of links in the model."""
@@ -185,3 +185,10 @@ class Model:
         joint.child = other_model.base
         other_model.pose = pose
         self._generate_joint_tree()
+
+    def copy_model(self):
+        """Returns a deep copy of the model with new unique link IDs."""
+        copied_model = deepcopy(self)
+        for link in copied_model.links:
+            link._id = uuid.uuid4()
+        return copied_model

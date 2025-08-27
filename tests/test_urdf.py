@@ -8,7 +8,7 @@ import io
 urdf_str = pyppet_to_urdf(EXAMPLE_MODEL, "example.urdf")
 root = ET.fromstring(urdf_str)
 
-def test_urdf_show():
+def test_urdf_model():
     with io.StringIO(urdf_str) as f:
         urdf_model = urdf.URDF.load(f)
         assert urdf_model is not None
