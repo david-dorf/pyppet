@@ -5,8 +5,8 @@ import pyppet.format as pf
 sphere_0 = pf.Sphere(radius=0.05)
 box_0 = pf.Box(length=0.05, width=0.05, height=0.1)
 cylinder_0 = pf.Cylinder(radius=0.02, height=0.35)
-mesh_0 = pf.Mesh(filename='pyppet/examples/example_mesh.stl', scale=(0.005, 0.001, 0.0312343575))
-mesh_1 = pf.Mesh(filename='pyppet/examples/example_mesh.stl', scale=(0.002, 0.002, 1e-6))
+mesh_0 = pf.Mesh(filename='pyppet/examples/example_mesh.stl', scale=(0.8, 0.9, 0.7))
+mesh_1 = pf.Mesh(filename='pyppet/examples/example_mesh.stl', scale=(0.96, 1.2, 1))
 
 # Color elements
 color_orange = (0.9, 0.5, 0.1)
@@ -35,6 +35,8 @@ link3 = pf.Link(name = 'link3', visual = visual_3, collision = box_0, physics = 
 link4 = pf.Link(name = 'link4', visual = visual_4, collision = mesh_1)
 link5 = pf.Link(name = 'link5', physics = physics_0)
 link6 = pf.Link(name = 'link6')
+link7 = link3.copy_link(new_name='link7')
+link7.name = 'link7'
 
 base_joint = pf.RigidJoint(
     parent = base_link,
@@ -44,7 +46,7 @@ base_joint = pf.RigidJoint(
 joint0 = pf.RigidJoint(
     parent = link0,
     child = link1,
-    pose = pf.Pose(translation = (0, 0, 0.333), rotation = (0.2, 1.23, 10.0)),
+    pose = pf.Pose(translation = (0, 0, 0.333), rotation = (0.2, 0.871, 10.0)),
 )
 
 joint1 = pf.RevoluteJoint(
@@ -58,7 +60,7 @@ joint1 = pf.RevoluteJoint(
 joint2 = pf.RevoluteJoint(
     parent = link2,
     child = link3,
-    pose = pf.Pose(translation = (0, 0, 0.316)),
+    pose = pf.Pose(translation = (0, 0, 0.316), rotation = (0.2, -0.2, 0.01)),
     axis = (0, 0, 1),
     limits = pf.Limits(position_range = (-2.8973, 2.8973)),
 )
@@ -86,7 +88,7 @@ joint5 = pf.RigidJoint(
 
 joint6 = pf.RigidJoint(
     parent = link5,
-    child = link3.copy_link(),
+    child = link7,
     pose = pf.Pose(translation = (2, 0.2, 0)),
 )
 

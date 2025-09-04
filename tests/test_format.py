@@ -5,7 +5,7 @@ import pyppet.format as pf
 example = EXAMPLE_MODEL
 
 parent_order = ["link5", "link4", "link3", "link2", "link1", "link0", "base_link"]
-child_order = ["link3", "link5", "link4", "link3", "link2", "link1", "link0"]
+child_order = ["link7", "link5", "link4", "link3", "link2", "link1", "link0"]
 visual_geometry_order = [None, pf.Sphere, pf.Box, pf.Cylinder, pf.Mesh, pf.Mesh, None, None]
 collision_geometry_order = [None, None, None, pf.Sphere, pf.Box, pf.Mesh, None, None]
 

@@ -97,9 +97,10 @@ class Link:
         self.collision = collision
         self.physics = physics
 
-    def copy_link(self):
+    def copy_link(self, new_name: str):
         link_copy = deepcopy(self)
         link_copy._id = uuid.uuid4()
+        link_copy.name = new_name
         return link_copy
 
 class BaseLink(Link):

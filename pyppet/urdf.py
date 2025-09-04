@@ -167,8 +167,13 @@ def pyppet_to_urdf(model: pyf.Model, file_name: str) -> str:
     robot_el = ET.Element("robot", name=model.name)
 
     # Add links
+    link_names = []
     for link in model.links:
-        robot_el.append(link_to_urdf(link))
+        if link.name not in link_names:
+            link_names.append(link.name)
+            robot_el.append(link_to_urdf(link))
+        else:
+            raise ValueError(f"Duplicate link name '{link.name}'")
 
     # Add joints
     for joint in model.joints:
