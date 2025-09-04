@@ -1,5 +1,6 @@
 import rerun as rr
 import pyppet.format as pf
+from scipy.spatial.transform import Rotation as R
 
 
 def visualize_rerun(model: pf.Model):
@@ -71,6 +72,7 @@ def visualize_rerun(model: pf.Model):
                 asset_hierarchy,
                 rr.Transform3D(
                     translation=joint.pose.translation,
+                    mat3x3=R.from_euler('xyz', joint.pose.rotation).as_matrix(),
                     scale = scale if scale is not None else [1, 1, 1]
                 )
             )
