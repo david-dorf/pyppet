@@ -10,9 +10,8 @@ root = ET.fromstring(urdf_str)
 
 def test_urdf_model():
     with io.StringIO(urdf_str) as f:
-        urdf_model = urdf.URDF.load(f)
+        urdf_model = urdf.URDF.load(f)  # You can visualize the model with urdf_model.show()
         assert urdf_model is not None
-        # For sanity checks you can show the robot with urdf_model.show()
 
 def test_robot_tag():
     assert root.tag == 'robot'

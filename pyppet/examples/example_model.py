@@ -1,8 +1,9 @@
 import pyppet.format as pf
 
+
 # Geometry elements
 sphere_0 = pf.Sphere(radius=0.05)
-box_0 = pf.Box(width=0.05, height=0.05, depth=0.1)
+box_0 = pf.Box(length=0.05, width=0.05, height=0.1)
 cylinder_0 = pf.Cylinder(radius=0.02, height=0.35)
 mesh_0 = pf.Mesh(filename='pyppet/examples/example_mesh.stl', scale=(0.005, 0.001, 0.0312343575))
 mesh_1 = pf.Mesh(filename='pyppet/examples/example_mesh.stl', scale=(0.002, 0.002, 1e-6))
@@ -26,7 +27,8 @@ physics_0 = pf.Physics(
     friction = (0.1)
 )
 
-link0 = pf.Link(name = 'base_link', visual = visual_0)
+base_link = pf.BaseLink()
+link0 = pf.Link(name = 'link0', visual = visual_0)
 link1 = pf.Link(name = 'link1', visual = visual_1)
 link2 = pf.Link(name = 'link2', visual = visual_2, collision = sphere_0)
 link3 = pf.Link(name = 'link3', visual = visual_3, collision = box_0, physics = physics_0)
@@ -34,10 +36,15 @@ link4 = pf.Link(name = 'link4', visual = visual_4, collision = mesh_1)
 link5 = pf.Link(name = 'link5', physics = physics_0)
 link6 = pf.Link(name = 'link6')
 
+base_joint = pf.RigidJoint(
+    parent = base_link,
+    child = link0,
+)
+
 joint0 = pf.RigidJoint(
     parent = link0,
     child = link1,
-    pose = pf.Pose(translation = (0, 0, 0.333)),
+    pose = pf.Pose(translation = (0, 0, 0.333), rotation = (0.2, 1.23, 10.0)),
 )
 
 joint1 = pf.RevoluteJoint(
@@ -75,9 +82,14 @@ joint4 = pf.SliderJoint(
 joint5 = pf.RigidJoint(
     parent = link5,
     child = link6,
-    pose = pf.Pose(),
 )
 
-joints = [joint0, joint1, joint2, joint3, joint4, joint5]
+joint6 = pf.RigidJoint(
+    parent = link5,
+    child = link3.copy_link(),
+    pose = pf.Pose(translation = (2, 0.2, 0)),
+)
 
-EXAMPLE_MODEL = pf.Model(name = "example_model", joints = joints, base = link0)
+joints = [base_joint, joint0, joint1, joint2, joint3, joint4, joint5, joint6]
+
+EXAMPLE_MODEL = pf.Model(name = "example_model", joints = joints)

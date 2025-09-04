@@ -7,7 +7,7 @@ def geometry_to_urdf(geometry):
     if isinstance(geometry, pyf.Sphere):
         return ET.Element("sphere", radius=str(geometry.radius))
     elif isinstance(geometry, pyf.Box):
-        return ET.Element("box", size=f"{geometry.width} {geometry.height} {geometry.depth}")
+        return ET.Element("box", size=f"{geometry.length} {geometry.width} {geometry.height}")
     elif isinstance(geometry, pyf.Cylinder):
         return ET.Element("cylinder", radius=str(geometry.radius), length=str(geometry.height))
     elif isinstance(geometry, pyf.Mesh):

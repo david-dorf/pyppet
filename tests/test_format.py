@@ -4,20 +4,20 @@ import pyppet.format as pf
 
 example = EXAMPLE_MODEL
 
-parent_order = ["base_link", "link1", "link2", "link3", "link4", "link5"]
-child_order = ["link1", "link2", "link3", "link4", "link5", "link6", "link7"]
-visual_geometry_order = [pf.Sphere, pf.Box, pf.Cylinder, pf.Mesh, pf.Mesh, None, None]
-collision_geometry_order = [None, None, pf.Sphere, pf.Box, pf.Mesh, None, None]
+parent_order = ["link5", "link4", "link3", "link2", "link1", "link0", "base_link"]
+child_order = ["link3", "link5", "link4", "link3", "link2", "link1", "link0"]
+visual_geometry_order = [None, pf.Sphere, pf.Box, pf.Cylinder, pf.Mesh, pf.Mesh, None, None]
+collision_geometry_order = [None, None, None, pf.Sphere, pf.Box, pf.Mesh, None, None]
 
 def test_joint_parent_names():
     """Test joint parent names align with expected order."""
-    joint_tree_generator = example.traverse_joint_tree(example.joints[0])
+    joint_tree_generator = example.traverse_joint_tree(example.joints[-1])
     for parent_name, joint in zip(parent_order, joint_tree_generator):
         assert joint.parent.name == parent_name
 
 def test_joint_child_names():
     """Test joint child names align with expected order."""
-    joint_tree_generator = example.traverse_joint_tree(example.joints[0])
+    joint_tree_generator = example.traverse_joint_tree(example.joints[-1])
     for child_name, joint in zip(child_order, joint_tree_generator):
         assert joint.child.name == child_name
 
@@ -61,7 +61,7 @@ def test_negative_inertia():
 def test_negative_dimensions():
     """Test negative dimensions raise ValueError."""
     try:
-        pf.Box(width = -1, height = -1, depth = -1)
+        pf.Box(length = -1, width = -1, height = -1)
         pf.Sphere(radius = -1)
         pf.Cylinder(radius = -1, height = -1)
         pf.Mesh(filename = "test", scale = (-1, -1, -1))
@@ -83,6 +83,7 @@ def test_attach_model():
     try:
         model1.attach_model(model2, model1.joints[5])  # Attaches model to joint 5 in joints array
         model1.traverse_joint_tree(model1.joints[0])
+        model1.traverse_joint_tree(model1.joints[3])
         assert True
     except RecursionError:
         assert False

@@ -1,5 +1,5 @@
 from pyppet.examples.example_model import EXAMPLE_MODEL
-import rerun as rr
+from pyppet.rerun import visualize_rerun
 
 
-rr.init("")
+visualize_rerun(EXAMPLE_MODEL)
